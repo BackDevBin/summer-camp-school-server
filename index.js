@@ -28,6 +28,16 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
+    const classData = client.db("SummerCamp").collection("classData");
+
+    app.get('/popular', async(req, res) =>{
+        const cursor = classData.find().sort({"total_students":-1}).limit(6);
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+  
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
