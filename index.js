@@ -28,18 +28,28 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-    const classData = client.db("SummerCamp").collection("classData");
+    
+    const classCollection = client.db("SummerCamp").collection("classCollection");
+    const userClassCollection = client.db("SummerCamp").collection("userClassCollection");
 
     app.get('/popular', async(req, res) =>{
-        const cursor = classData.find().sort({"total_students":-1}).limit(6);
+        const cursor = classCollection.find().sort({"total_students":-1}).limit(6);
         const result = await cursor.toArray();
         res.send(result);
       })
 
       app.get('/classes', async(req, res) =>{
-        const cursor = classData.find();
+        const cursor = classCollection.find();
         const result = await cursor.toArray();
         res.send(result);
+      })
+
+      app.post('/class', async(req, res) =>{
+        const item = req.body;
+        const result = await userClassCollection.insertOne(item);
+        console.log('users:', item);
+        res.send(result);
+  
       })
   
 
