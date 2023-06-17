@@ -29,7 +29,7 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
 
-    const classCollection = client.db("SummerCamp").collection("classCollection");
+    const classCollection = client.db("SummerCamp").collection("classData");
     const userClassCollection = client.db("SummerCamp").collection("userClassCollection");
     const usersCollection = client.db("SummerCamp").collection("users");
 
@@ -81,13 +81,38 @@ async function run() {
   
       })
 
+
+
       // user collections Api
+
+      app.get('/users', async(req, res) =>{
+        const cursor = usersCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      })
 
       app.post('/users', async(req, res) =>{
 
         const user = req.body;
+        const query = {email: user.email}
+        const existUser = await usersCollection.findOne(query);
+        if(existUser){
+          return res.send({message: 'user already exists'});
+        }
         const result = await usersCollection.insertOne(user);
         // console.log('users:', user);
+        res.send(result);
+      })
+
+      app.patch('/users/admin/:id', async(req, res) =>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)}
+        const upDoc ={
+          $set:{
+            role: 'admin'
+          }
+        }
+        const result = await usersCollection.updateOne(filter,upDoc);
         res.send(result);
       })
   
