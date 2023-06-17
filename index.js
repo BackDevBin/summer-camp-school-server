@@ -31,6 +31,9 @@ async function run() {
 
     const classCollection = client.db("SummerCamp").collection("classCollection");
     const userClassCollection = client.db("SummerCamp").collection("userClassCollection");
+    const usersCollection = client.db("SummerCamp").collection("users");
+
+
 
     app.get('/popular', async(req, res) =>{
         const cursor = classCollection.find().sort({"total_students":-1}).limit(6);
@@ -77,6 +80,17 @@ async function run() {
   
   
       })
+
+      // user collections Api
+
+      app.post('/users', async(req, res) =>{
+
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        // console.log('users:', user);
+        res.send(result);
+      })
+  
   
   
 
