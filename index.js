@@ -28,7 +28,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-    
+
     const classCollection = client.db("SummerCamp").collection("classCollection");
     const userClassCollection = client.db("SummerCamp").collection("userClassCollection");
 
@@ -44,6 +44,22 @@ async function run() {
         res.send(result);
       })
 
+      // Class collection api
+      
+      app.get('/class', async(req, res) =>{
+
+        const email = req.query.email;
+        
+        if(!email){
+          res.send([]);
+        }
+
+        const query = {email: email};
+        const result = await userClassCollection.find(query).toArray();
+        res.send(result);
+        
+      })
+      
       app.post('/class', async(req, res) =>{
         const item = req.body;
         const result = await userClassCollection.insertOne(item);
